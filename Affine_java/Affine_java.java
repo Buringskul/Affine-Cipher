@@ -1,25 +1,33 @@
+import java.util.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.*;
+
 public class Affine_java {
     // Keys
     static int a = 5;
     static int b = 8;
 
     static String encrypt(String message) {
+        String base = message.toUpperCase();
         String encrypted = "";
-        for (int i = 0; i < message.length(); i++) {
+        for (int i = 0; i < base.length(); i++) {
             // Avoid encrypting spaces
-            if (message.charAt(i) != ' ') {
+            if (base.charAt(i) != ' ') {
                 // (ax + b) % 26
-                encrypted += (char)((((a * message.charAt(i)) + b) % 26) + 65);
+                encrypted += (char)((((a * base.charAt(i)) + b) % 26) + 65);
             }
             // Adds space to encryption
             else {
-                encrypted += message.charAt(i);
+                encrypted += base.charAt(i);
             }
         }
         return encrypted;
     }
 
     static String decrypt(String cipher) {
+        String base = cipher.toUpperCase(); 
         String decrypted = "";
         int inverse_a = 0;
         int flag = 0;
@@ -34,13 +42,13 @@ public class Affine_java {
         }
 
         // Decrypt
-        for (int i = 0; i < cipher.length(); i++) {
-            if (cipher.charAt(i) != ' ') {
+        for (int i = 0; i < base.length(); i++) {
+            if (base.charAt(i) != ' ') {
                 // a^-1 (x - b) % 26
-                decrypted += (char)(((inverse_a * ((cipher.charAt(i) - b)) % 26)) + 65);
+                decrypted += (char)(((inverse_a * ((base.charAt(i) - b)) % 26)) + 65);
             }
             else {
-                decrypted += cipher.charAt(i);
+                decrypted += base.charAt(i);
             }
         }
 
@@ -48,7 +56,9 @@ public class Affine_java {
     }
 
     public static void main(String[] args) {
-        String msg = "HELLO WORLD";
+        Scanner input = new Scanner(System.in); // subbing this out for input from front end - kw
+        String msg = input.nextLine();
+        
         System.out.println("Encrypted message is: " + encrypt(msg));
         System.out.println("Decrypted message is: " + decrypt(encrypt(msg)));
     }
