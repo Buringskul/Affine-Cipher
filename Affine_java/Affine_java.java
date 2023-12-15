@@ -1,15 +1,10 @@
 import java.util.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.*;
 
 public class Affine_java {
-    // Keys
-    static int a = 5;
-    static int b = 8;
+    // static int a = 5;
+    // static int b = 8;
 
-    public static String encrypt(String message) {
+    public static String encrypt(String message, int a, int b) {
         String base = message.toUpperCase();
         String encrypted = "";
         for (int i = 0; i < base.length(); i++) {
@@ -26,7 +21,7 @@ public class Affine_java {
         return encrypted;
     }
 
-    public static String decrypt(String cipher) {
+    public static String decrypt(String cipher, int a, int b) {
         String base = cipher.toUpperCase(); 
         String decrypted = "";
         int inverse_a = 0;
@@ -59,9 +54,14 @@ public class Affine_java {
         Scanner input = new Scanner(System.in); // subbing this out for input from front end - kw
         // var for front end input
         String msg = input.nextLine();
+        int a = input.nextInt();
+        int b = input.nextInt();
         
-        System.out.println("Encrypted message is: " + encrypt(msg));
-        System.out.println("Decrypted message is: " + decrypt(encrypt(msg)));
+        System.out.println("Encrypted message is: " + encrypt(msg, a, b));
+
+        String encrypted = encrypt(msg, a, b);
+
+        System.out.println("Decrypted message is: " + decrypt(encrypted, a, b));
     }
 }
 
