@@ -9,7 +9,7 @@ public class Affine_java {
     static int a = 5;
     static int b = 8;
 
-    static String encrypt(String message) {
+    public static String encrypt(String message) {
         String base = message.toUpperCase();
         String encrypted = "";
         for (int i = 0; i < base.length(); i++) {
@@ -26,7 +26,7 @@ public class Affine_java {
         return encrypted;
     }
 
-    static String decrypt(String cipher) {
+    public static String decrypt(String cipher) {
         String base = cipher.toUpperCase(); 
         String decrypted = "";
         int inverse_a = 0;
@@ -57,6 +57,7 @@ public class Affine_java {
 
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in); // subbing this out for input from front end - kw
+        // var for front end input
         String msg = input.nextLine();
         
         System.out.println("Encrypted message is: " + encrypt(msg));
