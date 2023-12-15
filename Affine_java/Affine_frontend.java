@@ -9,7 +9,6 @@ import java.util.Scanner;
 import java.awt.Container;
 import javax.swing.*;
 
-import javafx.scene.transform.Affine;
 
 public class Affine_frontend extends JFrame implements ActionListener{
     private JTextArea output;
@@ -85,14 +84,17 @@ public class Affine_frontend extends JFrame implements ActionListener{
         keyA.setBounds(90, 50, 50, 30);
         keyB.setBounds(150, 50, 50, 30);
 
-        textOption.setBounds(110, 100, 150, 30);
+        textOption.setBounds(100, 100, 150, 30);
         textInput.setBounds(75, 130, 150, 30);
         
-        encryptButton.setBounds(30, 170, 100, 30);
-        decryptButton.setBounds(160, 170, 100, 30);
+        encryptButton.setBounds(30, 280, 100, 30);
+        decryptButton.setBounds(160, 280, 100, 30);
         
         outputLabel.setBounds(320, 20, 200, 30);
         output.setBounds(320, 50, 300, 350);
+
+        fileOption.setBounds(30, 170, 100, 30);
+        selectedFile.setBounds(30, 200, 196, 30);
 
         container.add(textInput);
         container.add(textOption);
@@ -103,6 +105,8 @@ public class Affine_frontend extends JFrame implements ActionListener{
         container.add(keyA);
         container.add(keyB);
         container.add(keyLabel);
+        container.add(fileOption);
+        container.add(selectedFile);
 
         affineFrame.setSize(800, 600);
         affineFrame.setVisible(true);
@@ -172,6 +176,8 @@ public class Affine_frontend extends JFrame implements ActionListener{
         JButton sourceEvent = (JButton)event.getSource();
 
         fileChooserVal = fileChooser.showOpenDialog(this);
+
+        System.out.println(msg);
         
         if (textInput.getText() != "") {
             msg = textInput.getText();            
@@ -221,10 +227,6 @@ public class Affine_frontend extends JFrame implements ActionListener{
 
     public static void main(String[] args) {
         Affine_frontend frontendFrame = new Affine_frontend();
-
-        frontendFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frontendFrame.pack();
-        frontendFrame.setVisible(true);
 
     }
 }
