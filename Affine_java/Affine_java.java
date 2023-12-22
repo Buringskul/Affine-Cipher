@@ -1,66 +1,53 @@
-import java.util.*;
+import java.math.BigInteger;
+import java.util.Scanner;
 
 public class Affine_java {
-    // static int a = 5;
-    // static int b = 8;
 
-    public static String encrypt(String message, int a, int b) {
+    public static String encrypt(String message, BigInteger a, BigInteger b) {
         String base = message.toUpperCase();
-        String encrypted = "";
+        StringBuilder encrypted = new StringBuilder();
+        
         for (int i = 0; i < base.length(); i++) {
-            // Avoid encrypting spaces
             if (Character.isLetter(base.charAt(i))) {
-                // (ax + b) % 26
-                encrypted += (char)((((a * base.charAt(i)) + b) % 26) + 65);
-            }
-            // Adds space to encryption
-            else {
-                encrypted += base.charAt(i);
+                BigInteger charValue = BigInteger.valueOf(base.charAt(i) - 'A');
+                BigInteger encryptedValue = (a.multiply(charValue).add(b)).mod(BigInteger.valueOf(26));
+                encrypted.append((char) (encryptedValue.intValue() + 'A'));
+            } else {
+                encrypted.append(base.charAt(i));
             }
         }
-        return encrypted;
+        return encrypted.toString();
     }
- 
-    public static String decrypt(String cipher, int a, int b) {
-        String base = cipher.toUpperCase(); 
-        String decrypted = "";
-        int inverse_a = 0;
-        int flag = 0;
 
-        // Find the inverse of a
-        for (int i = 0; i < 26; i++) {
-            flag = (a * i) % 26;
-            // If (a * i) % 26 == 1 then i is a multiplicative inverse of a
-            if (flag == 1) {
-                inverse_a = i;
+    public static String decrypt(String cipher, BigInteger a, BigInteger b) {
+        StringBuilder decrypted = new StringBuilder();
+        BigInteger inverseA = a.modInverse(BigInteger.valueOf(26));
+
+        for (int i = 0; i < cipher.length(); i++) {
+            if (Character.isLetter(cipher.charAt(i))) {
+                BigInteger charValue = BigInteger.valueOf(cipher.charAt(i) - 'A');
+                BigInteger decryptedValue = (inverseA.multiply(charValue.subtract(b))).mod(BigInteger.valueOf(26));
+                int intValue = decryptedValue.intValue();
+                if (intValue < 0) intValue += 26; // Handling negative values
+                decrypted.append((char) (intValue + 'A'));
+            } else {
+                decrypted.append(cipher.charAt(i));
             }
         }
 
-        // Decrypt
-        for (int i = 0; i < base.length(); i++) {
-            if (Character.isLetter(base.charAt(i))) {
-                // a^-1 (x - b) % 26
-                decrypted += (char)(((inverse_a * ((base.charAt(i) - b)) % 26)) + 65);
-            }
-            else {
-                decrypted += base.charAt(i);
-            }
-        }
-
-        return decrypted;
+        return decrypted.toString();
     }
 
     public static void main(String[] args) {
-        Scanner input = new Scanner(System.in); // subbing this out for input from front end - kw
-        // var for front end input
+        Scanner input = new Scanner(System.in); 
         String msg = input.nextLine();
-        int a = input.nextInt();
-        int b = input.nextInt();
+        BigInteger a = input.nextBigInteger();
+        BigInteger b = input.nextBigInteger();
         
         System.out.println("Encrypted message is: " + encrypt(msg, a, b));
-
+        
         String encrypted = encrypt(msg, a, b);
-
+        
         System.out.println("Decrypted message is: " + decrypt(encrypted, a, b));
     }
 }

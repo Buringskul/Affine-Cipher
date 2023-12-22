@@ -5,9 +5,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.text.NumberFormat;
 import java.util.Scanner;
-import java.awt.Container;
 import javax.swing.*;
 
 
@@ -33,6 +33,7 @@ public class Affine_frontend extends JFrame implements ActionListener{
     private JFormattedTextField keyB;
 
     private JFrame affineFrame;
+
     
     Affine_frontend() {
         affineFrame = new JFrame("Affine Cipher");
@@ -79,18 +80,18 @@ public class Affine_frontend extends JFrame implements ActionListener{
         encryptButton = new JButton("Encrypt");
         encryptButton.addActionListener((event) -> {
             String contents = textPad.getText();
-            int a = ((Number) keyA.getValue()).intValue();
-            int b = ((Number) keyB.getValue()).intValue();
+            BigInteger a = BigInteger.valueOf(((Number) keyA.getValue()).intValue());
+            BigInteger b = BigInteger.valueOf(((Number) keyB.getValue()).intValue());
             String encrypted = Affine_java.encrypt(contents, a, b);
             output.setText(encrypted);
         });
 
         decryptButton = new JButton("Decrypt");
         decryptButton.addActionListener((event) -> {
-            String contents = textPad.getText();
-            int a = ((Number) keyA.getValue()).intValue();
-            int b = ((Number) keyB.getValue()).intValue();
-            String decrypted = Affine_java.decrypt(Affine_java.encrypt(contents, a, b), a, b);
+            String contents = output.getText();
+            BigInteger a = BigInteger.valueOf(((Number) keyA.getValue()).intValue());
+            BigInteger b = BigInteger.valueOf(((Number) keyB.getValue()).intValue());
+            String decrypted = Affine_java.decrypt(contents, a, b);
             output.setText(decrypted);
         });
 
