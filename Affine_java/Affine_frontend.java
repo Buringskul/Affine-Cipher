@@ -35,9 +35,6 @@ public class Affine_frontend extends JFrame implements ActionListener{
     private JFrame affineFrame;
     
     Affine_frontend() {
-        // GridBagConstraints layout = null;
-        // setTitle("Affine Cipher");
-
         affineFrame = new JFrame("Affine Cipher");
 
         Container container = affineFrame.getContentPane();
