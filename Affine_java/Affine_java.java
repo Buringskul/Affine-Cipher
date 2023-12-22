@@ -3,14 +3,6 @@ import java.util.Scanner;
 
 public class Affine_java {
 
-        /**
-     * Encrypts the given message using the Affine cipher with BigInteger parameters.
-     *
-     * @param message The message to be encrypted.
-     * @param a       The multiplicative key for encryption.
-     * @param b       The additive key for encryption.
-     * @return The encrypted message.
-     */
     public static String encrypt(String message, BigInteger a, BigInteger b) {
         StringBuilder encrypted = new StringBuilder();
 
@@ -18,7 +10,7 @@ public class Affine_java {
         for (int i = 0; i < message.length(); i++) {
             char currentChar = message.charAt(i);
 
-            // Check if the character is a letter
+             // Check if the character is a letter
             if (Character.isLetter(currentChar)) {
                 // Determine the base ('A' for uppercase, 'a' for lowercase)
                 char base = Character.isUpperCase(currentChar) ? 'A' : 'a';
@@ -26,16 +18,16 @@ public class Affine_java {
                 // Calculate the index of the character in the alphabet
                 int charIndex = currentChar - base;
 
-                // Convert charIndex to a BigInteger
+                // Convert charIndex to a BigInteger and apply the Affine cipher formula for encryption
                 BigInteger charValue = BigInteger.valueOf(charIndex);
-
-                // Apply the Affine cipher formula for encryption
                 BigInteger encryptedIndex = a.multiply(charValue).add(b).mod(BigInteger.valueOf(26));
 
                 // Convert the encrypted index back to a character and append to the result
                 char encryptedChar = (char) (encryptedIndex.intValue() + base);
                 encrypted.append(encryptedChar);
-            } else {
+            } 
+            
+            else {
                 // Non-alphabetic characters are appended as is
                 encrypted.append(currentChar);
             }
@@ -43,52 +35,35 @@ public class Affine_java {
         return encrypted.toString();
     }
 
-    /**
-     * Decrypts the given cipher text using the Affine cipher with BigInteger parameters.
-     *
-     * @param cipher The cipher text to be decrypted.
-     * @param a      The multiplicative key for decryption.
-     * @param b      The additive key for decryption.
-     * @return The decrypted message.
-     */
     public static String decrypt(String cipher, BigInteger a, BigInteger b) {
         StringBuilder decrypted = new StringBuilder();
         BigInteger inverseA = BigInteger.ZERO;
         int flag = 0;
 
-        // Find the multiplicative inverse of 'a' modulo 26
+        // Find the inverse of a
         for (int i = 0; i < 26; i++) {
             flag = (a.intValue() * i) % 26;
-
             // If (a * i) % 26 == 1 then i is a multiplicative inverse of a
             if (flag == 1) {
                 inverseA = BigInteger.valueOf(i);
             }
         }
 
-        // Loop through each character in the cipher text
+        // Decrypt
         for (int i = 0; i < cipher.length(); i++) {
             char currentChar = cipher.charAt(i);
 
-            // Check if the character is a letter
             if (Character.isLetter(currentChar)) {
-                // Determine the base ('A' for uppercase, 'a' for lowercase)
                 char base = Character.isUpperCase(currentChar) ? 'A' : 'a';
-
-                // Calculate the index of the character in the alphabet
                 int charIndex = currentChar - base;
-
-                // Convert charIndex to a BigInteger
                 BigInteger charValue = BigInteger.valueOf(charIndex);
-
-                // Apply the Affine cipher formula for decryption
                 BigInteger decryptedIndex = inverseA.multiply(charValue.subtract(b).add(BigInteger.valueOf(26)))
                         .mod(BigInteger.valueOf(26));
-
-                // Convert the decrypted index back to a character and append to the result
                 char decryptedChar = (char) (decryptedIndex.intValue() + base);
                 decrypted.append(decryptedChar);
-            } else {
+            } 
+            
+            else {
                 // Non-alphabetic characters are appended as is
                 decrypted.append(currentChar);
             }
