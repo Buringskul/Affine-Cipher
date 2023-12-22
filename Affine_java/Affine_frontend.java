@@ -17,15 +17,16 @@ public class Affine_frontend extends JFrame implements ActionListener{
     
     private JButton encryptButton;
     private JButton decryptButton;
-   
+
     private JLabel textOption; 
-    private JTextField textInput;
+    private JTextArea textPad;
 
     private JLabel fileOption;
     private JLabel selectedFileLabel;
     private JTextField selectedFile;
     private JFileChooser fileChooser;
     private JButton openFileButton;
+    private JButton writeFileButton;
 
     private JLabel keyLabel;
     private JFormattedTextField keyA; 
@@ -41,22 +42,23 @@ public class Affine_frontend extends JFrame implements ActionListener{
 
         Container container = affineFrame.getContentPane();
         container.setLayout(null);
+        JScrollPane inScrollPane = null;
+        JScrollPane outScrollPane = null;
 
         textOption = new JLabel("Enter text here:");
 
-        textInput = new JTextField(15);
-        textInput.setEditable(true);
-        textInput.setText("");
+        textPad = new JTextArea(10, HEIGHT);
+        textPad.setEditable(true);
+        textPad.setLineWrap(true);
+        inScrollPane = new JScrollPane(textPad);
+        textPad.setText("");
 
         fileOption = new JLabel("Select .txt file");
 
         selectedFileLabel = new JLabel("Selected file:");
         selectedFile = new JTextField(20);
-        selectedFile.setEditable(true);
+        selectedFile.setEditable(false);
         selectedFile.setText("...");
-
-        openFileButton = new JButton("Open file");
-        openFileButton.addActionListener(this);
 
         fileChooser = new JFileChooser();
         
@@ -69,36 +71,122 @@ public class Affine_frontend extends JFrame implements ActionListener{
         keyB = new JFormattedTextField(NumberFormat.getNumberInstance());
         keyB.setEditable(true);
         keyB.setColumns(5);
-
-        encryptButton = new JButton("Encrypt");
-        encryptButton.addActionListener(this);
-
-        decryptButton = new JButton("Decrypt");
-        decryptButton.addActionListener(this);
-        
+      
         output = new JTextArea(10, 15);
+        output.setLineWrap(true);
+        outScrollPane = new JScrollPane(output);
         output.setEditable(false);
 
         outputLabel = new JLabel("Encrypted/Decrypted Message");
+
+        encryptButton = new JButton("Encrypt");
+        encryptButton.addActionListener((event) -> {
+            String contents = textPad.getText();
+            int a = ((Number) keyA.getValue()).intValue();
+            int b = ((Number) keyB.getValue()).intValue();
+            String encrypted = Affine_java.encrypt(contents, a, b);
+            output.setText(encrypted);
+        });
+
+        decryptButton = new JButton("Decrypt");
+        decryptButton.addActionListener((event) -> {
+            String contents = textPad.getText();
+            int a = ((Number) keyA.getValue()).intValue();
+            int b = ((Number) keyB.getValue()).intValue();
+            String decrypted = Affine_java.decrypt(Affine_java.encrypt(contents, a, b), a, b);
+            output.setText(decrypted);
+        });
+
+        openFileButton = new JButton("Open file");
+        openFileButton.addActionListener((event) -> {
+            FileInputStream fileByteStream = null; 
+            Scanner inFS = null;                  
+            String readLine;                      
+            File readFile = null;                  
+            int fileChooserVal;        
+            StringBuffer buffer = new StringBuffer(); 
+
+            fileChooserVal = fileChooser.showOpenDialog(this);
+            if (fileChooserVal == JFileChooser.APPROVE_OPTION) {
+                readFile = fileChooser.getSelectedFile();
+                selectedFile.setText(readFile.getPath());
+                if (readFile.canRead()) {
+                    try {
+                    fileByteStream = new FileInputStream(readFile);
+                    inFS = new Scanner(fileByteStream);
+                   
+                    output.setText(""); 
+
+                    while (inFS.hasNext()) {
+                        readLine = inFS.nextLine();
+                        buffer.append(readLine + System.lineSeparator());   
+                    }
+
+                    } catch (IOException e) {
+                    output.append("\n\nError occurred while creating file stream! " + e.getMessage());
+                    }
+                }
+                else {
+                    JOptionPane.showMessageDialog(this, "Can't read file!");
+                }
+            }
+            
+            textPad.setText(buffer.toString());
+            
+        });
+
+        writeFileButton = new JButton("Write to file");
+        writeFileButton.addActionListener((event) -> {
+            File readFile = new File(selectedFile.getText());
+            FileInputStream fileByteStream = null; 
+            Scanner inFS = null;                  
+            String readLine;                                            
+            StringBuffer buffer = new StringBuffer();
+            FileWriter writer; 
+
+                try {
+                    fileByteStream = new FileInputStream(readFile);
+                    inFS = new Scanner(fileByteStream);
+
+                    while (inFS.hasNext()) {
+                        readLine = inFS.nextLine();
+                        buffer.append(readLine + System.lineSeparator());  
+                    }
+
+                    writer = new FileWriter(readFile.getAbsolutePath());
+                    String result = output.getText();
+                    System.out.println(result);
+                    String fileContents = buffer.toString();
+                    fileContents = fileContents.replaceAll(fileContents, result);
+
+                    writer.append(fileContents);
+                    writer.flush();
+
+                    } 
+                catch (IOException e) {
+                    output.append("\n\nError occurred while creating file stream! " + e.getMessage());
+            }               
+        });
 
         keyLabel.setBounds(130, 20, 150, 30);
         keyA.setBounds(90, 50, 50, 30);
         keyB.setBounds(150, 50, 50, 30);
 
         textOption.setBounds(100, 100, 150, 30);
-        textInput.setBounds(75, 130, 150, 30);
+        textPad.setBounds(75, 130, 150, 30);
         
-        encryptButton.setBounds(30, 280, 100, 30);
-        decryptButton.setBounds(160, 280, 100, 30);
+        encryptButton.setBounds(30, 350, 100, 30);
+        decryptButton.setBounds(160, 350, 100, 30);
         
         outputLabel.setBounds(320, 20, 200, 30);
         output.setBounds(320, 50, 300, 350);
 
         fileOption.setBounds(30, 170, 100, 30);
-        selectedFile.setBounds(30, 200, 150, 30);
-        openFileButton.setBounds(190, 200, 84, 30);
+        selectedFile.setBounds(30, 200, 244, 30);
+        openFileButton.setBounds(30, 240, 100, 30);
+        writeFileButton.setBounds(160, 240, 100, 30);
 
-        container.add(textInput);
+        container.add(textPad);
         container.add(textOption);
         container.add(encryptButton);
         container.add(decryptButton);
@@ -110,12 +198,22 @@ public class Affine_frontend extends JFrame implements ActionListener{
         container.add(fileOption);
         container.add(selectedFile);
         container.add(openFileButton);
+        container.add(writeFileButton);
 
         affineFrame.setSize(800, 600);
         affineFrame.setVisible(true);
     }
 
-    
+                    // writer = new FileWriter(readFile.getAbsolutePath());
+                    // String encryptedBuffer = Affine_java.encrypt(buffer.toString(), a, b);
+                    // String fileContents = buffer.toString();
+                    // System.out.println(fileContents);
+                    // fileContents = fileContents.replaceAll(fileContents, encryptedBuffer);
+
+                    // writer.append(fileContents);
+                    // writer.flush();
+
+                    // output.setText("File encrypted");
 
     // performs encryption
     @Override
@@ -134,7 +232,7 @@ public class Affine_frontend extends JFrame implements ActionListener{
         JButton sourceEvent = (JButton)event.getSource();
         StringBuffer buffer = new StringBuffer(); 
 
-        msg = textInput.getText();
+        msg = textPad.getText();
         System.out.println(msg);
         encrypted = Affine_java.encrypt(msg, a, b);
 
@@ -152,7 +250,7 @@ public class Affine_frontend extends JFrame implements ActionListener{
                     try {
                     fileByteStream = new FileInputStream(readFile);
                     inFS = new Scanner(fileByteStream);
-
+                   
                     output.setText(""); 
 
                     while (inFS.hasNext()) {
@@ -170,28 +268,6 @@ public class Affine_frontend extends JFrame implements ActionListener{
                 }
             }
         }
-
-        System.out.println(buffer);
-
-                    // writer = new FileWriter(readFile.getAbsolutePath());
-                    // String encryptedBuffer = Affine_java.encrypt(buffer.toString(), a, b);
-                    // String fileContents = buffer.toString();
-                    // System.out.println(fileContents);
-                    // fileContents = fileContents.replaceAll(fileContents, encryptedBuffer);
-
-                    // writer.append(fileContents);
-                    // writer.flush();
-
-                    // output.setText("File encrypted");
-
-        if (sourceEvent == encryptButton) {
-            output.setText(Affine_java.encrypt(msg, a, b));
-        }
-
-        if (sourceEvent == decryptButton) {
-            output.setText(Affine_java.decrypt(msg, a, b));
-        }
-    
     } 
 
     public static void main(String[] args) {
