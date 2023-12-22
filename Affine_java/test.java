@@ -26,3 +26,29 @@ public class test {
         frame.setVisible(true);
     }
 }
+
+            // if (fileChooserVal == JFileChooser.APPROVE_OPTION) {
+            //     readFile = fileChooser.getSelectedFile();
+
+            //     selectedFile.setText(readFile.getName());
+
+            //     if (readFile.canRead()) {
+            //         try {
+            //         fileByteStream = new FileInputStream(readFile);
+            //         inFS = new Scanner(fileByteStream);
+
+            //         output.setText(""); 
+
+            //         while (inFS.hasNext()) {
+            //             readLine = inFS.nextLine();
+                        
+            //         }
+
+            //         } catch (IOException e) {
+            //         output.append("\n\nError occurred while creating file stream! " + e.getMessage());
+            //         }
+            //     }
+            //     else {
+            //         JOptionPane.showMessageDialog(this, "Can't read file!");
+            //     }
+            // }

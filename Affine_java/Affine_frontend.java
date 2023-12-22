@@ -3,6 +3,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.Scanner;
@@ -94,7 +95,8 @@ public class Affine_frontend extends JFrame implements ActionListener{
         output.setBounds(320, 50, 300, 350);
 
         fileOption.setBounds(30, 170, 100, 30);
-        selectedFile.setBounds(30, 200, 196, 30);
+        selectedFile.setBounds(30, 200, 150, 30);
+        openFileButton.setBounds(190, 200, 84, 30);
 
         container.add(textInput);
         container.add(textOption);
@@ -107,55 +109,10 @@ public class Affine_frontend extends JFrame implements ActionListener{
         container.add(keyLabel);
         container.add(fileOption);
         container.add(selectedFile);
+        container.add(openFileButton);
 
         affineFrame.setSize(800, 600);
         affineFrame.setVisible(true);
-        
-
-        // setLayout(new GridBagLayout());
-
-        // layout = new GridBagConstraints();
-        // layout.insets = new Insets(10, 10, 5, 1);
-        // layout.anchor = GridBagConstraints.LINE_END;
-        // layout.gridx = 0;
-        // layout.gridy = 0;
-        // add(textOption, layout);
-
-        // layout = new GridBagConstraints();
-        // layout.insets = new Insets(10, 1, 5, 10);
-        // layout.fill = GridBagConstraints.HORIZONTAL;
-        // layout.gridx = 1;
-        // layout.gridy = 0;
-        // add(textInput, layout);
-
-        // layout = new GridBagConstraints();
-        // layout.insets = new Insets(0, 5, 0, 10);
-        // layout.fill = GridBagConstraints.BOTH;
-        // layout.gridx = 1;
-        // layout.gridy = 1;
-        // add(encryptButton, layout);
-
-        // layout = new GridBagConstraints();
-        // layout.insets = new Insets(0, 5, 0, 10);
-        // layout.fill = GridBagConstraints.BOTH;
-        // layout.gridx = 1;
-        // layout.gridy = 3;
-        // add(decryptButton, layout);
-        
-        // layout = new GridBagConstraints();
-        // layout.insets = new Insets(10, 10, 1, 10);
-        // layout.fill = GridBagConstraints.HORIZONTAL;
-        // layout.gridx = 0;
-        // layout.gridy = 5;
-        // add(outputLabel, layout);
-  
-        // layout = new GridBagConstraints();
-        // layout.insets = new Insets(1, 10, 10, 10);
-        // layout.fill = GridBagConstraints.HORIZONTAL;
-        // layout.gridx = 0;
-        // layout.gridy = 6;
-        // layout.gridwidth = 3; // 3 cells wide
-        // add(output, layout);
     }
 
     
@@ -171,18 +128,21 @@ public class Affine_frontend extends JFrame implements ActionListener{
         Scanner inFS = null;                  
         String readLine;                      
         File readFile = null;                  
-        int fileChooserVal;                    
+        int fileChooserVal;      
+        FileWriter writer;              
 
         JButton sourceEvent = (JButton)event.getSource();
+        StringBuffer buffer = new StringBuffer(); 
 
-        fileChooserVal = fileChooser.showOpenDialog(this);
-
+        msg = textInput.getText();
         System.out.println(msg);
-        
-        if (textInput.getText() != "") {
-            msg = textInput.getText();            
-        }
-        else {
+        encrypted = Affine_java.encrypt(msg, a, b);
+
+        a = ((Number) keyA.getValue()).intValue();
+        b = ((Number) keyB.getValue()).intValue();
+
+        if (sourceEvent == openFileButton) {
+            fileChooserVal = fileChooser.showOpenDialog(this);
             if (fileChooserVal == JFileChooser.APPROVE_OPTION) {
                 readFile = fileChooser.getSelectedFile();
 
@@ -197,7 +157,8 @@ public class Affine_frontend extends JFrame implements ActionListener{
 
                     while (inFS.hasNext()) {
                         readLine = inFS.nextLine();
-                        
+                        buffer.append(readLine + System.lineSeparator()); 
+                        System.out.println(buffer);   
                     }
 
                     } catch (IOException e) {
@@ -210,19 +171,27 @@ public class Affine_frontend extends JFrame implements ActionListener{
             }
         }
 
-        a = ((Number) keyA.getValue()).intValue();
-        b = ((Number) keyB.getValue()).intValue();
+        System.out.println(buffer);
 
-        encrypted = Affine_java.encrypt(msg, a, b);
+                    // writer = new FileWriter(readFile.getAbsolutePath());
+                    // String encryptedBuffer = Affine_java.encrypt(buffer.toString(), a, b);
+                    // String fileContents = buffer.toString();
+                    // System.out.println(fileContents);
+                    // fileContents = fileContents.replaceAll(fileContents, encryptedBuffer);
+
+                    // writer.append(fileContents);
+                    // writer.flush();
+
+                    // output.setText("File encrypted");
 
         if (sourceEvent == encryptButton) {
             output.setText(Affine_java.encrypt(msg, a, b));
         }
+
         if (sourceEvent == decryptButton) {
-            output.setText(Affine_java.decrypt(encrypted, a, b));
+            output.setText(Affine_java.decrypt(msg, a, b));
         }
-        
-        
+    
     } 
 
     public static void main(String[] args) {

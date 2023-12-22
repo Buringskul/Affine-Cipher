@@ -9,7 +9,7 @@ public class Affine_java {
         String encrypted = "";
         for (int i = 0; i < base.length(); i++) {
             // Avoid encrypting spaces
-            if (base.charAt(i) != ' ') {
+            if (Character.isLetter(base.charAt(i))) {
                 // (ax + b) % 26
                 encrypted += (char)((((a * base.charAt(i)) + b) % 26) + 65);
             }
@@ -20,7 +20,7 @@ public class Affine_java {
         }
         return encrypted;
     }
-
+ 
     public static String decrypt(String cipher, int a, int b) {
         String base = cipher.toUpperCase(); 
         String decrypted = "";
@@ -38,7 +38,7 @@ public class Affine_java {
 
         // Decrypt
         for (int i = 0; i < base.length(); i++) {
-            if (base.charAt(i) != ' ') {
+            if (Character.isLetter(base.charAt(i))) {
                 // a^-1 (x - b) % 26
                 decrypted += (char)(((inverse_a * ((base.charAt(i) - b)) % 26)) + 65);
             }
