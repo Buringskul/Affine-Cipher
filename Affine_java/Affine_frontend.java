@@ -204,70 +204,10 @@ public class Affine_frontend extends JFrame implements ActionListener{
         affineFrame.setVisible(true);
     }
 
-                    // writer = new FileWriter(readFile.getAbsolutePath());
-                    // String encryptedBuffer = Affine_java.encrypt(buffer.toString(), a, b);
-                    // String fileContents = buffer.toString();
-                    // System.out.println(fileContents);
-                    // fileContents = fileContents.replaceAll(fileContents, encryptedBuffer);
-
-                    // writer.append(fileContents);
-                    // writer.flush();
-
-                    // output.setText("File encrypted");
-
     // performs encryption
     @Override
     public void actionPerformed(ActionEvent event) {
-        String msg = "";
-        String encrypted = "";
-        int a = 0;
-        int b = 0;
-        FileInputStream fileByteStream = null; 
-        Scanner inFS = null;                  
-        String readLine;                      
-        File readFile = null;                  
-        int fileChooserVal;      
-        FileWriter writer;              
-
-        JButton sourceEvent = (JButton)event.getSource();
-        StringBuffer buffer = new StringBuffer(); 
-
-        msg = textPad.getText();
-        System.out.println(msg);
-        encrypted = Affine_java.encrypt(msg, a, b);
-
-        a = ((Number) keyA.getValue()).intValue();
-        b = ((Number) keyB.getValue()).intValue();
-
-        if (sourceEvent == openFileButton) {
-            fileChooserVal = fileChooser.showOpenDialog(this);
-            if (fileChooserVal == JFileChooser.APPROVE_OPTION) {
-                readFile = fileChooser.getSelectedFile();
-
-                selectedFile.setText(readFile.getName());
-
-                if (readFile.canRead()) {
-                    try {
-                    fileByteStream = new FileInputStream(readFile);
-                    inFS = new Scanner(fileByteStream);
-                   
-                    output.setText(""); 
-
-                    while (inFS.hasNext()) {
-                        readLine = inFS.nextLine();
-                        buffer.append(readLine + System.lineSeparator()); 
-                        System.out.println(buffer);   
-                    }
-
-                    } catch (IOException e) {
-                    output.append("\n\nError occurred while creating file stream! " + e.getMessage());
-                    }
-                }
-                else {
-                    JOptionPane.showMessageDialog(this, "Can't read file!");
-                }
-            }
-        }
+       
     } 
 
     public static void main(String[] args) {
